@@ -6,7 +6,7 @@ app = FastAPI()
 
 ALLOWED_ORIGINS = [
     "http://localhost:4200",
-    "https://TU-SITIO.netlify.app",   # <-- pega aquí tu URL REAL de Netlify
+    "https://family-scheduler-front.netlify.app",
 ]
 
 app.add_middleware(
@@ -16,7 +16,6 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
 # Para autenticacion
 
 app.include_router(auth_routes.router, prefix='/auth', tags= ['auth'])
