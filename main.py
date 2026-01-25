@@ -1,15 +1,22 @@
 from fastapi import FastAPI
-from routes import children_routes, events_routes, families_routes,auth_routes, fmembers_routes
 from fastapi.middleware.cors import CORSMiddleware
+from routes import children_routes, events_routes, families_routes, auth_routes, fmembers_routes
+
 app = FastAPI()
+
+ALLOWED_ORIGINS = [
+    "http://localhost:4200",
+    "https://TU-SITIO.netlify.app",   # <-- pega aquí tu URL REAL de Netlify
+]
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:4200"],
+    allow_origins=ALLOWED_ORIGINS,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
 # Para autenticacion
 
 app.include_router(auth_routes.router, prefix='/auth', tags= ['auth'])
