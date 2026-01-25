@@ -1,0 +1,14 @@
+@host = http://localhost
+@port = 8000
+
+### GET members by family
+GET {{host}}:{{port}}/fmembers/families/1
+
+### UPDATE member profile (ej: user_id=1 en family 1)
+PUT {{host}}:{{port}}/fmembers/families/1/users/1
+Content-Type: application/json
+
+{
+  "relationship_label": "madre",
+  "avatar_url": "https://github.com/LauMontironi.png"
+}

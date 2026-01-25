@@ -1,0 +1,38 @@
+@host = http://localhost 
+@port = 8000
+
+########GET ALL FAMILIES
+GET {{host}}:{{port}}/families
+
+########GET family by id 
+GET {{host}}:{{port}}/families/1
+
+###
+GET {{host}}:{{port}}/families/1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6OCwiZW1haWwiOiJlbWFpbHBydWViYTJAZXhhbXBsZS5jb20iLCJmdWxsX25hbWUiOiJVc3VhcmlvIFVubyIsImV4cCI6MTc2OTI4NTI4Mn0.GOB1KP2TbBOZjn4wz5QDXEaS8tR6kRAr3OD_sm7bgaA
+
+### MY FAMILIES
+GET {{host}}:{{port}}/families/my
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6OCwiZW1haWwiOiJlbWFpbHBydWViYTJAZXhhbXBsZS5jb20iLCJmdWxsX25hbWUiOiJVc3VhcmlvIFVubyIsImV4cCI6MTc2OTI4NjAxNn0.OS-f6rUslyrTOAzlI89-QX6oC95vFVFlepcVgEmV1oo
+
+
+########CREATE NEW FAMILY
+POST {{host}}:{{port}}/families/
+Content-Type: application/json
+
+  {
+  
+    "name": "Familia para delete"
+ 
+  }
+########UPDATE  FAMILY
+PUT {{host}}:{{port}}/families/2
+Content-Type: application/json
+
+  {
+    "id": 2,
+    "name": "Familia Belmaña"
+  }
+
+########DELETE  FAMILY
+DELETE {{host}}:{{port}}/families/4

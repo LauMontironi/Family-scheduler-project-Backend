@@ -1,0 +1,61 @@
+@host = http://localhost 
+@port = 8000
+
+POST {{host}}:{{port}}/events/families/1/children/3/events
+Content-Type: application/json
+
+{
+  "created_by": 1,
+  "title": "Baile",
+  "type": "activity",
+  "start_at": "2026-02-03T17:00:00",
+  "end_at": "2026-02-03T18:00:00",
+  "location": "Academia Central",
+  "notes": "Llevar zapatillas"
+}
+
+### GET events by family (lista)
+GET {{host}}:{{port}}/events/families/1
+
+### GET event by id dentro de familia
+GET {{host}}:{{port}}/events/families/1/events/1
+
+###UPDATE EVENT
+PUT {{host}}:{{port}}/events/families/1/events/1
+Content-Type: application/json
+
+{
+  "id": 1,
+  "child_id": 3,
+  "created_by": 1,
+  "title": "Baile (actualizado)",
+  "type": "activity",
+  "start_at": "2026-02-03T17:00:00",
+  "end_at": "2026-02-03T18:30:00",
+  "location": "Academia Central",
+  "notes": "Llevar zapatillas + agua"
+}
+
+
+###DELETE DELETE 
+DELETE {{host}}:{{port}}/events/families/1/events/1
+
+########FILTROS##########
+""1️⃣ Filtro por TYPE 
+Esto conecta directamente con:
+card “extraescolares”
+card “médico”
+card “cumpleaños”
+card “ver todo”""
+##TYPE 
+
+GET {{host}}:{{port}}/events/families/1/events/type/activity
+
+""2️⃣ Filtro por CHILD (calendario individual)""
+
+# ###Filtro por CHILD (calendario individual)
+
+
+""3️⃣ Filtro por RANGO DE FECHAS""
+###
+GET {{host}}:{{port}}/events/families/1/events/range?start=2026-02-01T00:00:00&end=2026-02-28T23:59:59

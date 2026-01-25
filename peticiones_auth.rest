@@ -1,0 +1,31 @@
+@host = http://localhost
+@port = 8000
+
+
+
+GET {{host}}:{{port}}/auth/me
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6OCwiZW1haWwiOiJlbWFpbHBydWViYTJAZXhhbXBsZS5jb20iLCJmdWxsX25hbWUiOiJVc3VhcmlvIFVubyIsImV4cCI6MTc2OTI4NDA3OH0.HsOkw0QLmUtr_czBsOI2wQyCMBxB9smQwmOGoEr6KAU
+
+
+### GET USER BY ID
+GET {{host}}:{{port}}/auth/users/1
+
+### REGISTER
+POST {{host}}:{{port}}/auth/register
+Content-Type: application/json
+
+{
+  "email": "emailprueba2@example.com",
+  "password": "123456",
+  "full_name": "Usuario Uno"
+}
+
+
+### LOGIN
+POST {{host}}:{{port}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "emailprueba2@example.com",
+  "password": "123456"
+}
