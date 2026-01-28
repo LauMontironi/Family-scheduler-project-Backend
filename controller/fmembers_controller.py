@@ -101,3 +101,35 @@ async def update_member_profile(family_id: int, user_id: int, payload: UpdateFam
         raise HTTPException(status_code=500, detail=f"Error: {str(e)}")
     finally:
         conn.close()
+
+
+
+async def get_dashboard(family_id: int):
+    try:
+        conn = await get_conexion()
+        async with conn.cursor(aio.DictCursor) as cursor:
+            # 1. Obtener Miembros Adultos (Uniendo users con family_members)
+            await cursor.execute('''
+                SELECT u.id, u.full_name, fm.role 
+                FROM users u
+                JOIN family_members fm ON u.id = fm.user_id
+                WHERE fm.family_id = %s
+            ''', (family_id,))
+            members = await cursor.fetchall()
+
+            # 2. Obtener Niños
+            await cursor.execute('SELECT * FROM children WHERE family_id = %s', (family_id,))
+            children = await cursor.fetchall()
+
+            # 3. Obtener Eventos (Mezclados)
+            await cursor.execute('SELECT * FROM events WHERE family_id = %s ORDER BY start_at ASC', (family_id,))
+            events = await cursor.fetchall()
+
+            return {
+                "members": members,
+                "children": children,
+                "events": events
+            }
+    except Exception as e:
+        print(f"Error: {e}")
+        return {"error": "No se pudo cargar el dashboard"}

@@ -36,3 +36,9 @@ Content-Type: application/json
 
 ########DELETE  FAMILY
 DELETE {{host}}:{{port}}/families/4
+
+
+### GET DASHBOARD SUMMARY
+GET {{host}}:{{port}}/families/summary/all
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTEsImVtYWlsIjoiYW5hQGRlbW8uY29tIiwiZnVsbF9uYW1lIjoiQW5hIFJpdmVyYSIsImV4cCI6MTc2OTYzOTk1Mn0.5Bpy7NdRSL3hN57xNu_T5YzZDhEbsfa5zQa195ywPfo
+Content-Type: application/json
