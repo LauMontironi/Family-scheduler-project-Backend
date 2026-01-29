@@ -3,7 +3,7 @@ from datetime import date, datetime
 from typing import Optional 
 
 class CreateFamily(BaseModel):
-    name:str
+    family_name:str
 
 class UpdateFamily(BaseModel):
     id:int

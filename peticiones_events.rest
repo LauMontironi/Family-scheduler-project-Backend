@@ -1,61 +1,46 @@
-@host = http://localhost 
+@host = http://127.0.0.1
 @port = 8000
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJhbmEucml2ZXJhQGRlbW8uY29tIiwiZnVsbF9uYW1lIjoiQW5hIFJpdmVyYSIsImV4cCI6MTc2OTcyNjAxMH0.XlBxegjZKVbvC9j61Ox0Gmf3dxe_VCbSmEaOGu0Hf0k
+@family_id = 1
+@member_id = 1
 
-POST {{host}}:{{port}}/events/families/1/children/3/events
+### Crear evento
+POST {{host}}:{{port}}/events/families/{{family_id}}/members/{{member_id}}/events
+Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
-  "created_by": 1,
-  "title": "Baile",
-  "type": "activity",
-  "start_at": "2026-02-03T17:00:00",
-  "end_at": "2026-02-03T18:00:00",
-  "location": "Academia Central",
-  "notes": "Llevar zapatillas"
+  "title": "Cena Familiar",
+  "description": "Cena en casa",
+  "location": "Casa",
+  "type": "family",
+  "start_at": "2026-02-15T21:00:00",
+  "end_at": "2026-02-15T22:30:00"
 }
 
-### GET events by family (lista)
-GET {{host}}:{{port}}/events/families/1
+### Obtener todos los eventos de la familia
+GET {{host}}:{{port}}/events/families/{{family_id}}
+Authorization: Bearer {{token}}
 
-### GET event by id dentro de familia
-GET {{host}}:{{port}}/events/families/1/events/1
+### Obtener un evento por ID
+GET {{host}}:{{port}}/events/families/{{family_id}}/events/1
+Authorization: Bearer {{token}}
 
-###UPDATE EVENT
-PUT {{host}}:{{port}}/events/families/1/events/1
+### Actualizar evento
+PUT {{host}}:{{port}}/events/families/{{family_id}}/events/1
+Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
   "id": 1,
-  "child_id": 3,
-  "created_by": 1,
-  "title": "Baile (actualizado)",
-  "type": "activity",
-  "start_at": "2026-02-03T17:00:00",
-  "end_at": "2026-02-03T18:30:00",
-  "location": "Academia Central",
-  "notes": "Llevar zapatillas + agua"
+  "title": "Cena Familiar Actualizada",
+  "description": "Traer postre",
+  "location": "Casa",
+  "type": "family",
+  "start_at": "2026-02-15T21:30:00",
+  "end_at": "2026-02-15T23:00:00"
 }
 
-
-###DELETE DELETE 
-DELETE {{host}}:{{port}}/events/families/1/events/1
-
-########FILTROS##########
-""1️⃣ Filtro por TYPE 
-Esto conecta directamente con:
-card “extraescolares”
-card “médico”
-card “cumpleaños”
-card “ver todo”""
-##TYPE 
-
-GET {{host}}:{{port}}/events/families/1/events/type/activity
-
-""2️⃣ Filtro por CHILD (calendario individual)""
-
-# ###Filtro por CHILD (calendario individual)
-
-
-""3️⃣ Filtro por RANGO DE FECHAS""
-###
-GET {{host}}:{{port}}/events/families/1/events/range?start=2026-02-01T00:00:00&end=2026-02-28T23:59:59
+### Eliminar evento
+DELETE {{host}}:{{port}}/events/families/{{family_id}}/events/1
+Authorization: Bearer {{token}}

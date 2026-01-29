@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from routes import children_routes, events_routes, families_routes, auth_routes, fmembers_routes
+from routes import events_routes, families_routes, auth_routes, fmembers_routes
 
 app = FastAPI()
 
@@ -24,9 +24,6 @@ app.include_router(auth_routes.router, prefix='/auth', tags= ['auth'])
 
 app.include_router(families_routes.router, prefix='/families', tags= ['families'])
 
-#para children 
-
-app.include_router(children_routes.router, prefix='/children', tags= ['children'])
 
 #para events 
 

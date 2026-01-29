@@ -1,14 +1,40 @@
 @host = http://localhost
 @port = 8000
 
-### GET members by family
+### DASHBOARD SUMMARY (Carga Miembros y Eventos a la vez)
+GET {{host}}:{{port}}/fmembers/summary/all
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJhbmEucml2ZXJhQGRlbW8uY29tIiwiZnVsbF9uYW1lIjoiQW5hIFJpdmVyYSIsImV4cCI6MTc2OTcyNjAxMH0.XlBxegjZKVbvC9j61Ox0Gmf3dxe_VCbSmEaOGu0Hf0k
+
+### Listar todos los miembros de una familia específica
 GET {{host}}:{{port}}/fmembers/families/1
 
-### UPDATE member profile (ej: user_id=1 en family 1)
-PUT {{host}}:{{port}}/fmembers/families/1/users/1
+### Crear un nuevo Miembro (is_child: true para niños, false para adultos)
+POST {{host}}:{{port}}/fmembers/
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NCwiZW1haWwiOiJwcnVlYmFAZGVtby5jb20iLCJmdWxsX25hbWUiOiJMYXUgTW9udGlyb25pIiwiZXhwIjoxNzY5NzIyMjM0fQ.TZz-ASkI7K_JF8k3rvIxuTuYfyRNd0WT4DERnWslkB0
 Content-Type: application/json
 
 {
-  "relationship_label": "madre",
-  "avatar_url": "https://github.com/LauMontironi.png"
+    "full_name": "Libe Rivera",
+    "relationship": "Hija",
+    "is_child": true,
+    "birthdate": "2018-05-20",
+    "gender": "female",
+    "city": "Madrid",
+    "hobbys": "Patinar"
 }
+
+### Actualizar perfil de un miembro (member_id = 2)
+PUT {{host}}:{{port}}/fmembers/2
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NCwiZW1haWwiOiJwcnVlYmFAZGVtby5jb20iLCJmdWxsX25hbWUiOiJMYXUgTW9udGlyb25pIiwiZXhwIjoxNzY5NzIyMjM0fQ.TZz-ASkI7K_JF8k3rvIxuTuYfyRNd0WT4DERnWslkB0
+Content-Type: application/json
+
+{
+    "relationship": "Hija Mayor",
+    "city": "Barcelona",
+    "hobbys": "Patinar y Leer",
+    "gender": "female"
+}
+
+### Eliminar un miembro
+DELETE {{host}}:{{port}}/fmembers/5
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NCwiZW1haWwiOiJwcnVlYmFAZGVtby5jb20iLCJmdWxsX25hbWUiOiJMYXUgTW9udGlyb25pIiwiZXhwIjoxNzY5NzIyMjM0fQ.TZz-ASkI7K_JF8k3rvIxuTuYfyRNd0WT4DERnWslkB0

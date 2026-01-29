@@ -43,9 +43,9 @@ async def require_family_member(family_id: int = Path(...),
         async with conn.cursor(aio.DictCursor) as cursor:
             await cursor.execute(
                 """
-                SELECT role
-                FROM family_schedule.family_members
-                WHERE family_id=%s AND user_id=%s
+                SELECT relationship
+                FROM members
+                WHERE family_id=%s AND id=%s
                 """,
                 (family_id, user["id"])
             )
@@ -56,7 +56,7 @@ async def require_family_member(family_id: int = Path(...),
             # devolvemos info útil por si luego quieres validar admin
             return {
                 "user": user,
-                "role": membership["role"]
+                "role": membership["relationship"]
             }
     finally:
         conn.close()

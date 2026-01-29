@@ -1,31 +1,30 @@
 @host = http://localhost
 @port = 8000
 
+### Registrar nuevo usuario (Admin de familia)
 
-
-GET {{host}}:{{port}}/auth/me
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6OCwiZW1haWwiOiJlbWFpbHBydWViYTJAZXhhbXBsZS5jb20iLCJmdWxsX25hbWUiOiJVc3VhcmlvIFVubyIsImV4cCI6MTc2OTI4NDA3OH0.HsOkw0QLmUtr_czBsOI2wQyCMBxB9smQwmOGoEr6KAU
-
-
-### GET USER BY ID
-GET {{host}}:{{port}}/auth/users/1
-
-### REGISTER
 POST {{host}}:{{port}}/auth/register
 Content-Type: application/json
 
 {
-  "email": "emailprueba2@example.com",
-  "password": "123456",
-  "full_name": "Usuario Uno"
+    "email": "ana.rivera@demo.com",
+    "password": "Demo1234!!",
+    "full_name": "Carla Montironi"
 }
 
-
-### LOGIN
+### Login (Aquí obtienes el Token para el resto de pruebas)
 POST {{host}}:{{port}}/auth/login
 Content-Type: application/json
 
 {
-  "email": "ana@demo.com",
-  "password": "Demo1234!"
+    "email": "ana.rivera@demo.com",
+    "password": "Demo1234!"
 }
+
+### Obtener mis datos actuales (Verificar que el Token funciona)
+GET {{host}}:{{port}}/auth/me
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MywiZW1haWwiOiJjYXJsYUBkZW1vLmNvbSIsImZ1bGxfbmFtZSI6IkxhdSBNb250aXJvbmkiLCJleHAiOjE3Njk3MTgxMzF9.y_0RnqBEfYxatmuydm-c0ajc_uR8trjG4tTUyddRBHQ
+
+### Obtener un usuario por ID específico
+GET {{host}}:{{port}}/auth/users/2
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MywiZW1haWwiOiJjYXJsYUBkZW1vLmNvbSIsImZ1bGxfbmFtZSI6IkxhdSBNb250aXJvbmkiLCJleHAiOjE3Njk3MTgxMzF9.y_0RnqBEfYxatmuydm-c0ajc_uR8trjG4tTUyddRBHQ

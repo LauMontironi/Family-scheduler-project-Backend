@@ -1,38 +1,43 @@
 from fastapi import HTTPException
 import aiomysql as aio
 from db.config import get_conexion
-from controller.children_controller import family_exists
 from models.fmembers_model import UpdateFamilyMember
 
 
-# GET members by family
-async def get_members_by_family(family_id: int):
-    try:
-        await family_exists(family_id)
 
+
+# PUT member profile (relationship_label, avatar_url)
+async def update_member_profile(family_id: int, member_id: int, payload: UpdateFamilyMember):
+    try:
+      
         conn = await get_conexion()
         async with conn.cursor(aio.DictCursor) as cursor:
+            # comprobar que ese user es miembro de esa familia
             await cursor.execute(
                 """
-                SELECT
-                    fm.id AS family_member_id,
-                    fm.family_id,
-                    fm.user_id,
-                    u.full_name,
-                    u.email,
-                    fm.role,
-                    fm.relationship_label,
-                    fm.avatar_url,
-                    fm.created_at
-                FROM family_schedule.family_members fm
-                JOIN family_schedule.users u ON u.id = fm.user_id
-                WHERE fm.family_id = %s
-                ORDER BY fm.created_at
+                SELECT id FROM members WHERE id=%s AND family_id=%s
                 """,
-                (family_id,)
+                (member_id, family_id)
             )
-            members = await cursor.fetchall()
-            return members
+            exists = await cursor.fetchone()
+            if not exists:
+                raise HTTPException(status_code=404, detail="Miembro no encontrado en esta familia")
+
+            # update simple (tu estilo PUT completo para esos 2 campos)
+            await cursor.execute(
+                """
+                UPDATE members 
+                SET relationship=%s, hobbys=%s, city=%s, gender=%s
+                WHERE id=%s AND family_id=%s
+                """,
+                (payload.relationship, payload.hobbys, payload.city, payload.gender, member_id, family_id)
+            )
+            await conn.commit()
+
+            # devolver el miembro actualizado (con JOIN para que salga full_name)
+            await cursor.execute("SELECT * FROM members WHERE id=%s", (member_id,))
+            updated = await cursor.fetchone()
+            return {"msg": "Perfil actualizado correctamente", "item": updated}
 
     except HTTPException:
         raise
@@ -42,61 +47,31 @@ async def get_members_by_family(family_id: int):
         conn.close()
 
 
-# PUT member profile (relationship_label, avatar_url)
-async def update_member_profile(family_id: int, user_id: int, payload: UpdateFamilyMember):
+
+async def create_member(family_id: int, member_data):
+    conn = await get_conexion()
     try:
-        await family_exists(family_id)
-
-        conn = await get_conexion()
         async with conn.cursor(aio.DictCursor) as cursor:
-            # comprobar que ese user es miembro de esa familia
-            await cursor.execute(
-                """
-                SELECT id FROM family_schedule.family_members
-                WHERE family_id=%s AND user_id=%s
-                """,
-                (family_id, user_id)
-            )
-            fm = await cursor.fetchone()
-            if fm is None:
-                raise HTTPException(status_code=404, detail="Ese usuario no es miembro de esta familia")
-
-            # update simple (tu estilo PUT completo para esos 2 campos)
-            await cursor.execute(
-                """
-                UPDATE family_schedule.family_members
-                SET relationship_label=%s, avatar_url=%s
-                WHERE family_id=%s AND user_id=%s
-                """,
-                (payload.relationship_label, payload.avatar_url, family_id, user_id)
-            )
+            is_child_val = 1 if member_data.is_child else 0
+            await cursor.execute("""
+                INSERT INTO members 
+                (family_id, full_name, relationship, is_child, birthdate, gender, city, hobbys, email) 
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s) """,
+        
+            (
+                family_id,
+                member_data.full_name,
+                member_data.relationship,
+                1 if member_data.is_child else 0,
+                member_data.birthdate,
+                member_data.gender,
+                member_data.city,
+                member_data.hobbys,
+                member_data.email
+            ))
+           
             await conn.commit()
-
-            # devolver el miembro actualizado (con JOIN para que salga full_name)
-            await cursor.execute(
-                """
-                SELECT
-                    fm.id AS family_member_id,
-                    fm.family_id,
-                    fm.user_id,
-                    u.full_name,
-                    u.email,
-                    fm.role,
-                    fm.relationship_label,
-                    fm.avatar_url,
-                    fm.created_at
-                FROM family_schedule.family_members fm
-                JOIN family_schedule.users u ON u.id = fm.user_id
-                WHERE fm.family_id = %s AND fm.user_id = %s
-                """,
-                (family_id, user_id)
-            )
-            updated = await cursor.fetchone()
-
-            return {"msg": "Family member profile updated", "item": updated}
-
-    except HTTPException:
-        raise
+            return {"msg": "Miembro creado con éxito", "id": cursor.lastrowid}
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error: {str(e)}")
     finally:
@@ -108,28 +83,46 @@ async def get_dashboard(family_id: int):
     try:
         conn = await get_conexion()
         async with conn.cursor(aio.DictCursor) as cursor:
-            # 1. Obtener Miembros Adultos (Uniendo users con family_members)
-            await cursor.execute('''
-                SELECT u.id, u.full_name, fm.role 
-                FROM users u
-                JOIN family_members fm ON u.id = fm.user_id
-                WHERE fm.family_id = %s
-            ''', (family_id,))
+            # 1. Traemos a TODOS los miembros (Adultos y Niños)
+            # En el Front los separarás por 'is_child'
+            await cursor.execute('SELECT * FROM members WHERE family_id = %s', (family_id,))
             members = await cursor.fetchall()
 
-            # 2. Obtener Niños
-            await cursor.execute('SELECT * FROM children WHERE family_id = %s', (family_id,))
-            children = await cursor.fetchall()
-
-            # 3. Obtener Eventos (Mezclados)
+            # 2. Traemos todos los eventos
             await cursor.execute('SELECT * FROM events WHERE family_id = %s ORDER BY start_at ASC', (family_id,))
             events = await cursor.fetchall()
 
             return {
                 "members": members,
-                "children": children,
                 "events": events
             }
     except Exception as e:
         print(f"Error: {e}")
-        return {"error": "No se pudo cargar el dashboard"}
+        return {"error": str(e)}
+    finally:
+        conn.close()
+
+async def delete_member(family_id: int, member_id: int):
+    conn = await get_conexion()
+    try:
+        async with conn.cursor(aio.DictCursor) as cursor:
+            await cursor.execute("DELETE FROM members WHERE id=%s AND family_id=%s", (member_id, family_id))
+            await conn.commit()
+            return {"msg": "Eliminado"}
+    except Exception as e:
+        print(f"Error: {e}")
+        return {"error": str(e)}
+    finally:
+        conn.close()
+
+async def get_members_by_family(family_id: int):
+    conn = await get_conexion()
+    try:
+        async with conn.cursor(aio.DictCursor) as cursor:
+            await cursor.execute("SELECT * FROM members WHERE family_id = %s", (family_id,))
+            return await cursor.fetchall()
+    except Exception as e:
+        print(f"Error: {e}")
+        return {"error": str(e)}
+    finally:
+        conn.close()

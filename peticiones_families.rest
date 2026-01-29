@@ -1,44 +1,33 @@
 @host = http://localhost 
 @port = 8000
 
-########GET ALL FAMILIES
-GET {{host}}:{{port}}/families
-
-########GET family by id 
-GET {{host}}:{{port}}/families/1
-
-###
-GET {{host}}:{{port}}/families/1
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6OCwiZW1haWwiOiJlbWFpbHBydWViYTJAZXhhbXBsZS5jb20iLCJmdWxsX25hbWUiOiJVc3VhcmlvIFVubyIsImV4cCI6MTc2OTI4NTI4Mn0.GOB1KP2TbBOZjn4wz5QDXEaS8tR6kRAr3OD_sm7bgaA
-
-### MY FAMILIES
-GET {{host}}:{{port}}/families/my
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6OCwiZW1haWwiOiJlbWFpbHBydWViYTJAZXhhbXBsZS5jb20iLCJmdWxsX25hbWUiOiJVc3VhcmlvIFVubyIsImV4cCI6MTc2OTI4NjAxNn0.OS-f6rUslyrTOAzlI89-QX6oC95vFVFlepcVgEmV1oo
-
-
-########CREATE NEW FAMILY
+### Crear una nueva familia
 POST {{host}}:{{port}}/families/
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJhbmEucml2ZXJhQGRlbW8uY29tIiwiZnVsbF9uYW1lIjoiQW5hIFJpdmVyYSIsImV4cCI6MTc2OTcyNjAxMH0.XlBxegjZKVbvC9j61Ox0Gmf3dxe_VCbSmEaOGu0Hf0k
 Content-Type: application/json
 
-  {
-  
-    "name": "Familia para delete"
- 
-  }
-########UPDATE  FAMILY
-PUT {{host}}:{{port}}/families/2
+{
+    "family_name": "Familia Re"
+}
+
+### Listar MIS familias (A las que pertenezco)
+GET {{host}}:{{port}}/families/my
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJhbmEucml2ZXJhQGRlbW8uY29tIiwiZnVsbF9uYW1lIjoiQW5hIFJpdmVyYSIsImV4cCI6MTc2OTcyNjAxMH0.XlBxegjZKVbvC9j61Ox0Gmf3dxe_VCbSmEaOGu0Hf0k
+
+### Obtener detalle de una familia por ID
+GET {{host}}:{{port}}/families/6
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJhbmEucml2ZXJhQGRlbW8uY29tIiwiZnVsbF9uYW1lIjoiQW5hIFJpdmVyYSIsImV4cCI6MTc2OTcyNjAxMH0.XlBxegjZKVbvC9j61Ox0Gmf3dxe_VCbSmEaOGu0Hf0k
+
+### Actualizar nombre de la familia (Solo Admin)
+PUT {{host}}:{{port}}/families/6
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJhbmEucml2ZXJhQGRlbW8uY29tIiwiZnVsbF9uYW1lIjoiQW5hIFJpdmVyYSIsImV4cCI6MTc2OTcyNjAxMH0.XlBxegjZKVbvC9j61Ox0Gmf3dxe_VCbSmEaOGu0Hf0k
 Content-Type: application/json
 
-  {
-    "id": 2,
-    "name": "Familia Belmaña"
-  }
+{
+    "id": 6,
+    "name": " Actualizado"
+}
 
-########DELETE  FAMILY
-DELETE {{host}}:{{port}}/families/4
-
-
-### GET DASHBOARD SUMMARY
-GET {{host}}:{{port}}/families/summary/all
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTEsImVtYWlsIjoiYW5hQGRlbW8uY29tIiwiZnVsbF9uYW1lIjoiQW5hIFJpdmVyYSIsImV4cCI6MTc2OTYzOTk1Mn0.5Bpy7NdRSL3hN57xNu_T5YzZDhEbsfa5zQa195ywPfo
-Content-Type: application/json
+### Eliminar familia (Solo Admin)
+DELETE {{host}}:{{port}}/families/6
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJhbmEucml2ZXJhQGRlbW8uY29tIiwiZnVsbF9uYW1lIjoiQW5hIFJpdmVyYSIsImV4cCI6MTc2OTcyNjAxMH0.XlBxegjZKVbvC9j61Ox0Gmf3dxe_VCbSmEaOGu0Hf0k

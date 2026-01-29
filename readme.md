@@ -1,184 +1,126 @@
-# 👨‍👩‍👧‍👦 Family Scheduler API
+👨‍👩‍👧‍👦 Family Scheduler API
 
-**Backend – FastAPI + MySQL**
+Backend – FastAPI + MySQL (Railway)
+API para gestionar familias, miembros y eventos familiares.
 
-API para una aplicación de organización familiar: gestión de familias, miembros, hijos/as y eventos (calendario familiar).  
-Incluye autenticación con contraseñas hasheadas y JWT.
+🧱 Stack
 
----
+FastAPI
 
-## ✍️ Autora
+MySQL (Railway)
 
-**Laura Montironi**  
-Proyecto personal de aprendizaje y desarrollo full-stack.
+aiomysql
 
----
+passlib (argon2)
 
-## 🧱 Stack Tecnológico
-
-- **FastAPI**
-- **MySQL 8**
-- **aiomysql**
-- **passlib (argon2)** – hash de contraseñas
-- **python-jose** – JWT
-- **python-dotenv**
-
----
-
-## 📦 Instalación
-
-### 1. Crear entorno virtual
-
-```bash
-python -m venv .venv
-
-2. Instalar dependencias
-
-pip install -r requirements.txt
+python-jose (JWT)
 
 🔐 Variables de entorno (.env)
-
-Crear un archivo .env en la raíz del proyecto:
-SECRET_KEY=tu_clave_secreta
+SECRET_KEY=tu_clave
 ALGORITHM=HS256
 ACCESS_TOKEN_EXPIRE_MINUTES=60
 
-DB_HOST=localhost
-DB_PORT=3306
-DB_USER=root
+DB_HOST=tu_host_railway
+DB_PORT=tu_puerto
+DB_USER=tu_usuario
 DB_PASSWORD=tu_password
-DB_NAME=family_schedule
+DB_NAME=railway
 
 🗄️ Base de Datos
 
-Schema principal: family_schedule
+| Campo       | Tipo      |
+| ----------- | --------- |
+| id          | INT PK    |
+| family_name | VARCHAR   |
+| created_at  | TIMESTAMP |
 
-Tablas
+members
 
-users
+Adultos y niños en la misma tabla
 
-families
-
-family_members
-
-children
+| Campo        | Tipo           |
+| ------------ | -------------- |
+| id           | INT PK         |
+| family_id    | INT FK         |
+| full_name    | VARCHAR        |
+| email        | VARCHAR        |
+| password     | VARCHAR (hash) |
+| relationship | VARCHAR        |
+| is_child     | BOOL           |
+| birthdate    | DATE           |
+| gender       | VARCHAR        |
+| city         | VARCHAR        |
+| hobbys       | TEXT           |
+| is_admin     | BOOL           |
 
 events
 
-Relaciones clave
+| Campo       | Tipo        |
+| ----------- | ----------- |
+| id          | INT PK      |
+| family_id   | INT FK      |
+| member_id   | INT FK NULL |
+| title       | VARCHAR     |
+| description | TEXT        |
+| location    | VARCHAR     |
+| type        | VARCHAR     |
+| start_at    | DATETIME    |
+| end_at      | DATETIME    |
 
-family_members vincula users ↔ families
+🔑 Auth
 
-children.family_id → families.id
-
-events.family_id → families.id
-
-events.child_id → children.id (ON DELETE SET NULL)
-
-family_members guarda:
-
-role (admin / parent)
-
-relationship_label (madre, padre, abuelo…)
-
-avatar_url
-
-🔑 Autenticación (Auth)
-Registro
-POST /auth/register
-
-Login (devuelve JWT)
-POST /auth/login
-
-Usuario autenticado
-GET /auth/me
-Authorization: Bearer <TOKEN>
-
-🧠 Flujo de Seguridad
-
-Passwords hasheados con argon2
-
-JWT contiene:
-
-id
-️
-
-email
-
-full_name
-
-Validación por:
-
-get_current_user
-
-pertenencia a familia vía family_members
+| Método | Ruta             | Descripción    |
+| ------ | ---------------- | -------------- |
+| POST   | `/auth/register` | Crear usuario  |
+| POST   | `/auth/login`    | Login y JWT    |
+| GET    | `/auth/me`       | Usuario actual |
 
 👪 Families
-Familias del usuario logado (cards del frontend)
-GET /families/my
-Authorization: Bearer <TOKEN>
 
-Obtener una familia (requiere pertenecer)
-GET /families/{family_id}
-Authorization: Bearer <TOKEN>
+| Método | Ruta                    |
+| ------ | ----------------------- |
+| GET    | `/families/my`          |
+| POST   | `/families/`            |
+| GET    | `/families/{family_id}` |
+| PUT    | `/families/{family_id}` |
+| DELETE | `/families/{family_id}` |
 
-Crear familia (crea membership admin automáticamente)
-POST /families
-Authorization: Bearer <TOKEN>
+👥 Members
 
-Actualizar / eliminar familia (solo admin)
-PUT /families/{family_id}
-DELETE /families/{family_id}
-
-👥 Family Members
-GET /fmembers/families/{family_id}
-PUT /fmembers/families/{family_id}/users/{user_id}
-
-👶 Children
-GET    /children/families/{family_id}/children
-GET    /children/families/{family_id}/children/{child_id}
-POST   /children/families/{family_id}/children
-PUT    /children/families/{family_id}/children/{child_id}
-DELETE /children/families/{family_id}/children/{child_id}
+| Método | Ruta                             |
+| ------ | -------------------------------- |
+| GET    | `/fmembers/summary/all`          |
+| GET    | `/fmembers/families/{family_id}` |
+| POST   | `/fmembers/`                     |
+| PUT    | `/fmembers/{member_id}`          |
+| DELETE | `/fmembers/{member_id}`          |
 
 📅 Events
-GET    /events/families/{family_id}
-GET    /events/families/{family_id}/events/{event_id}
-POST   /events/families/{family_id}/children/{child_id}/events
-PUT    /events/families/{family_id}/events/{event_id}
-DELETE /events/families/{family_id}/events/{event_id}
 
+| Método | Ruta                                                      | Descripción               |
+| ------ | --------------------------------------------------------- | ------------------------- |
+| POST   | `/events/families/{family_id}/members/{member_id}/events` | Crear evento              |
+| GET    | `/events/families/{family_id}`                            | Listar eventos de familia |
+| GET    | `/events/families/{family_id}/events/{event_id}`          | Ver evento                |
+| PUT    | `/events/families/{family_id}/events/{event_id}`          | Editar evento             |
+| DELETE | `/events/families/{family_id}/events/{event_id}`          | Eliminar evento           |
 
-Incluye:
+🧪 Usuario de prueba
 
-validación de fechas
+| Email                                             | Password  |
+| ------------------------------------------------- | --------- |
+| [ana.rivera@demo.com](mailto:ana.rivera@demo.com) | Demo1234! |
 
-filtros por tipo
+🚀 Flujo Frontend
 
-eventos por hijo o familiares
-
-🧩 Estado actual del proyecto
-
-✔ CRUD completo (families, members, children, events)
-✔ Auth + JWT
-✔ Protección por pertenencia a familia
-✔ Endpoint listo para frontend (/families/my)
-
-🚀 Próximo paso: Frontend (Angular)
-
-Flujo previsto:
-
-Landing page (join the family / welcome back)
-
-Login / Register
+Login
 
 Guardar token
 
 GET /auth/me
 
-GET /families/my → cards de familias
+GET /families/my
 
-Dashboard por familia (miembros + children + calendario)
+GET /fmembers/summary/all
 
-Proyecto educativo desarrollado paso a paso para aprender backend real con FastAPI y MySQL.
-```
+CRUD eventos vía /events/families/{id}

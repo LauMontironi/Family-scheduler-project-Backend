@@ -14,10 +14,10 @@ async def get_user_by_id(user_id: int):
         async with conn.cursor(aio.DictCursor) as cursor:
             await cursor.execute(
                 """
-                SELECT  id, email, full_name, created_at
-                FROM family_schedule.users
+                SELECT id, email, full_name, family_id, is_admin 
+                FROM members 
                 WHERE id=%s
-                """,
+                """, 
                 (user_id,)
             )
             user = await cursor.fetchone()
@@ -35,16 +35,16 @@ async def get_user_by_id(user_id: int):
 
 
 
-
-
 async def register_new_user(user:UserCreate):
+    existing = await get_user_by_email(user.email)
+    if existing: raise HTTPException(status_code=400, detail="Email ya registrado")
     try:
         conn= await get_conexion()
         async with conn.cursor(aio.DictCursor) as cursor:
             # aca se hasea al password tengo que importar la funcion hash que hice el security
             hashed_pass = hash_password(user.password)
             await cursor.execute(
-                'INSERT INTO family_schedule.users (email, password, full_name) VALUES (%s,%s,%s)', (
+                'INSERT INTO members (email, password, full_name) VALUES (%s,%s,%s)', (
                     user.email, 
                     hashed_pass, 
                     user.full_name 
@@ -64,13 +64,16 @@ async def get_user_by_email(email: str):
         conn = await get_conexion()
         async with conn.cursor(aio.DictCursor) as cursor:
             await cursor.execute(
-                "SELECT  id, email, password, full_name, created_at FROM family_schedule.users WHERE email=%s",
+                "SELECT id, email, password, full_name FROM members WHERE email=%s",
                 (email,)
             )
             user = await cursor.fetchone()
             return user
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error: {str(e)}")
     finally:
         conn.close()
+
 
 async def login_user(payload: UserLogin):
     try:
@@ -97,7 +100,8 @@ async def login_user(payload: UserLogin):
             "user": {
                 "id": user["id"],
                 "email": user["email"],
-                "full_name": user["full_name"]
+                "full_name": user["full_name"],
+                "family_id": user.get("family_id")
                
                 
             }
@@ -107,3 +111,28 @@ async def login_user(payload: UserLogin):
         raise
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error: {str(e)}")
+    
+
+
+async def register_new_user(user: UserCreate):
+   
+    existing = await get_user_by_email(user.email)
+    if existing:
+        raise HTTPException(status_code=400, detail="El email ya está registrado")
+
+    try:
+        conn = await get_conexion()
+        async with conn.cursor(aio.DictCursor) as cursor:
+            hashed_pass = hash_password(user.password)
+            #
+            await cursor.execute(
+                'INSERT INTO members (email, password, full_name) VALUES (%s,%s,%s)', 
+                (user.email, hashed_pass, user.full_name)
+            )
+            await conn.commit()
+            new_id = cursor.lastrowid
+            return await get_user_by_id(new_id)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error: {str(e)}")
+    finally:
+        conn.close()
