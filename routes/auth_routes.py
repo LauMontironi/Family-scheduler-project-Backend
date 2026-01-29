@@ -26,3 +26,4 @@ async def register(user: UserCreate):
 @router.post('/login', status_code=200)
 async def login(payload: UserLogin):
     return await auth_controller.login_user(payload)
+
