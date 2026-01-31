@@ -9,7 +9,7 @@ Content-Type: application/json
 {
     "email": "laura.lopez@demo.com",
     "password": "Demo1234!!",
-    "full_name": "Carla Montironi"
+    "full_name": "Laura Lopez"
 }
 
 ### Login (Aquí obtienes el Token para el resto de pruebas)
@@ -17,7 +17,7 @@ POST {{host}}:{{port}}/auth/login
 Content-Type: application/json
 
 {
-    "email": "ana.rivera@demo.com",
+    "email": "laura.lopez@demo.com",
     "password": "Demo1234!"
 }
 

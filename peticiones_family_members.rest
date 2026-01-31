@@ -38,3 +38,8 @@ Content-Type: application/json
 ### Eliminar un miembro
 DELETE {{host}}:{{port}}/fmembers/5
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NCwiZW1haWwiOiJwcnVlYmFAZGVtby5jb20iLCJmdWxsX25hbWUiOiJMYXUgTW9udGlyb25pIiwiZXhwIjoxNzY5NzIyMjM0fQ.TZz-ASkI7K_JF8k3rvIxuTuYfyRNd0WT4DERnWslkB0
+
+
+### Listar todos los miembros de una familia específica
+GET {{host}}:{{port}}/fmembers/9
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6OSwiZW1haWwiOiJsYXVyYS5sb3BlekBkZW1vLmNvbSIsImZ1bGxfbmFtZSI6IkxhdXJhIExvcGV6IiwiZXhwIjoxNzY5ODgwMjA4fQ.t-g0pAN2MRk7BOogo0aby8h8i2l8hqeyvmKScH-J_9k
