@@ -44,3 +44,8 @@ Content-Type: application/json
 ### Eliminar evento
 DELETE {{host}}:{{port}}/events/families/{{family_id}}/events/1
 Authorization: Bearer {{token}}
+
+
+###events  por mienmbro 
+
+GET {{host}}:{{port}}/events/families/2/members/9/events

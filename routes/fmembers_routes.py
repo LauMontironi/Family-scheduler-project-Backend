@@ -24,3 +24,7 @@ async def update(member_id: int, payload: UpdateFamilyMember, u=Depends(get_curr
 @router.delete('/{member_id}')
 async def delete(member_id: int, u=Depends(get_current_user)):
     return await fmembers_controller.delete_member(u["family_id"], member_id)
+
+@router.get('/{member_id}')
+async def get_member(member_id: int, u=Depends(get_current_user)):
+    return await fmembers_controller.get_member_by_id(u["family_id"], member_id)

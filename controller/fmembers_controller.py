@@ -126,3 +126,32 @@ async def get_members_by_family(family_id: int):
         return {"error": str(e)}
     finally:
         conn.close()
+
+
+async def get_member_by_id(family_id: int, member_id: int):
+    conn = None
+    try:
+        conn = await get_conexion()
+        async with conn.cursor(aio.DictCursor) as cursor:
+            await cursor.execute(
+                "SELECT * FROM members WHERE id=%s AND family_id=%s",
+                (member_id, family_id)
+            )
+            member = await cursor.fetchone()
+
+            if not member:
+                raise HTTPException(status_code=404, detail="Miembro no encontrado en esta familia")
+
+            
+            if "password" in member:
+                member.pop("password")
+
+            return member
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error: {str(e)}")
+    finally:
+        if conn:
+            conn.close()

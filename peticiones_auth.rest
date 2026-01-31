@@ -7,7 +7,7 @@ POST {{host}}:{{port}}/auth/register
 Content-Type: application/json
 
 {
-    "email": "ana.rivera@demo.com",
+    "email": "laura.lopez@demo.com",
     "password": "Demo1234!!",
     "full_name": "Carla Montironi"
 }
