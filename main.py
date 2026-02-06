@@ -6,7 +6,8 @@ app = FastAPI()
 
 ALLOWED_ORIGINS = [
     "http://localhost:4200",
-    "https://family-scheduler-front.netlify.app",
+    "https://family-scheduler-front.netlify.app",   # Netlify (viejo)
+    "https://family-scheduler-project.vercel.app",  # Vercel (nuevo)
 ]
 
 app.add_middleware(
@@ -16,6 +17,7 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
 # Para autenticacion
 
 app.include_router(auth_routes.router, prefix='/auth', tags= ['auth'])
